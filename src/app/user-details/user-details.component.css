@@ -1,0 +1,36 @@
+button{
+    cursor: pointer;
+}
+td{
+    text-align: center;
+    padding: 6px;
+}
+tr{
+    cursor: pointer;
+}
+tr:hover{
+    background-color: #eee
+}
+table{
+    border: 1px solid #eee;
+    width: 100%;
+}
+thead{
+    border-color: #eee;
+    background-color: #eee;
+}
+td{
+    border-bottom: 1px solid #eee;
+    border-right: 1px solid #eee;
+    text-align: center
+}
+th{
+    text-align: center
+}
+.backbtn{
+    text-align: center;
+    margin: 1%;
+}
+.top3{
+    margin-top: 3%;
+}

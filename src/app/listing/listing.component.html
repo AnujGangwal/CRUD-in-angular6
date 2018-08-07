@@ -1,0 +1,142 @@
+<div class="container">
+  <div class="card top3">
+        <h3>CRUD Operation Application (Angular 6)</h3>
+    <div class="col-lg-12">
+      <button class="addData col-lg-4" (click)="openModal()">Add new data</button>
+    </div>
+  <table *ngIf="showTable">
+    <thead>
+      <th>Name</th>
+      <th>Date Of Birth</th>
+      <th>Email</th>
+      <th>Mobile</th>
+      <th>Active</th>
+      <th>Actions</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let list of listData; let rowIndex = index">
+        <td (click)="goToUserDetials(rowIndex)">{{list.first_name}} {{list.last_name}}</td>
+        <td (click)="goToUserDetials(rowIndex)">{{list.dob}}</td>
+        <td (click)="goToUserDetials(rowIndex)">{{list.email}}</td>
+        <td (click)="goToUserDetials(rowIndex)">{{list.phone}}</td>
+        <td (click)="goToUserDetials(rowIndex)" *ngIf="list.active"><span class="mar3">{{list.active}}</span></td>
+        <td (click)="goToUserDetials(rowIndex)" *ngIf="!list.active"><span class="mar3">{{list.active}}</span></td>
+        <td>
+          <button (click)="editData(rowIndex)">Edit</button>
+          <button (click)="deleteData(rowIndex)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p *ngIf="!showTable && userDataExist != null && !userDataExist">NO Data Found</p>
+  <p *ngIf="!showTable && userDataExist == null">Loading...</p>
+  </div>
+
+  <!-- open a modal window by clicking button  basic bootstrap-->
+  <!-- <button type="button" class="btn btn-info btn-lg" (click)="openModal()">click to open</button> -->
+
+  <div class="backdrop" [ngStyle]="{'display':display}"></div>
+
+
+<div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':display}">
+  <div class="modal-dialog set" role="document">
+    <div class="modal-content" style="    width: 100%;
+    height: 100%;
+    padding: 20px 50px 20px 20px;
+    overflow: auto;">
+      <div class="modal-header" style="padding:5%">
+        <h4 *ngIf="newUser" style="margin-top: -15px;">Add Data</h4>
+        <h4 *ngIf="!newUser" style="margin-top: -15px;">Edit/Update Data</h4>
+        <button type="button" class="close padding-none" aria-label="Close" (click)="onCloseHandled()"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+          <form name="userDetials" #userDetials="ngForm" id="userDetials" method="post" autocomplete="on">
+            <fieldset>
+                <div class="col-md-12 col-lg-12 form-group  fieldHeight" >
+                    <label for="setFirstName">First Name</label>
+                    <input type="text" [(ngModel)]="user.first_name" id="setFirstName" class="form-control" name="setFirstName" pattern="[a-zA-Z ]+"
+                            #setFirstName="ngModel" autofocus  required />
+                    <div *ngIf="setFirstName.errors && (setFirstName.dirty || setFirstName.touched)" class="alert alert-danger">
+                            <p [hidden]="!setFirstName.errors.required" class=" text-danger">
+                                    First Name is required!
+                            </p>
+                            <p [hidden]="!setFirstName.hasError('pattern')" class=" text-danger">
+                                    Must be a valid Name!
+                            </p>
+                    </div>
+            </div>
+
+            <div class="col-lg-12 col-md-12 form-group  fieldHeight" >
+                <label for="setLastname" class="addoptional">Last Name</label>
+                <input type="text" [(ngModel)]="user.last_name" id="setLastname" class="form-control" name="setLastname" pattern="[a-zA-Z ]+" #setLastname="ngModel"
+                required />
+                <div *ngIf="setLastname.errors && (setLastname.dirty || setLastname.touched)" class="alert alert-danger">
+                        <p [hidden]="!setLastname.errors.required" class=" text-danger">
+                                Last Name is required!
+                        </p>
+                        <p [hidden]="!setLastname.hasError('pattern')" class=" text-danger">
+                                Must be a valid Name!
+                        </p>
+                </div>
+        </div>
+        <div class="col-lg-12 form-group ">
+            <label for="mobileNumber">Mobile Number</label>
+            <input type="text" class="form-control" [(ngModel)]="user.phone" id="mobileNumber" pattern="^[0-9]{10}$" minlength="10" maxlength="10" name="mobileNumber"
+                    #mobileNumber="ngModel" required />
+            <div *ngIf="mobileNumber.errors && (mobileNumber.dirty || mobileNumber.touched)" class="alert alert-danger">
+                    <p [hidden]="!mobileNumber.errors.required" class=" text-danger settop">
+                            Mobile is required!
+                    </p>
+                    <p [hidden]="!mobileNumber.hasError('pattern')" class=" text-danger settop">
+                            Must be a valid Number!
+                    </p>
+            </div>
+    </div>
+    <div class="col-lg-12  form-group ">
+            <label for="emailAddress">Email Address</label>
+            <input type="email" class="form-control " [(ngModel)]="user.email" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+                    id="emailAddress" name="emailAddress" #emailAddress="ngModel" required />
+            <div *ngIf="emailAddress.errors && (emailAddress.dirty || emailAddress.touched)" class="alert alert-danger">
+                    <p [hidden]="!emailAddress.errors.required" class=" text-danger">
+                            Email is required!
+                    </p>
+                    <p [hidden]="!emailAddress.hasError('pattern')" class=" text-danger">
+                            Must be a valid Email!
+                    </p>
+            </div>
+    </div>
+    <div class="col-lg-12 form-group " >
+        <label for="selectDOB">Date Of Birth</label>
+        <input type="date" [(ngModel)]="user.dob" class="form-control"  
+                 id="selectDOB" name="selectDOB"  [max]="today" #selectDOB="ngModel"  required />
+        <div *ngIf="selectDOB.errors && (selectDOB.dirty || selectDOB.touched)" class="alert alert-danger text-danger">
+                <p [hidden]="!selectDOB.errors.required">
+                        Date of Birth is required!
+                </p>
+        </div>
+       
+    </div>
+    <div class="col-lg-12">
+        <label for="selectAction">Status</label>
+        <select [(ngModel)]="user.active" name="selectAction" class="margin-none form-control" id="selectAction" #selectAction="ngModel"
+                required>
+                <option selected="selected" value="true">Active</option>
+                <option value="false" >UnActive</option>
+               
+        </select>
+        
+</div>
+            </fieldset>
+          </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" (click)="onCloseHandled()" >Close</button>
+        <button type="submit" class="btn btn-default" [disabled]="userDetials.form.invalid" (click)="updateData()" *ngIf="!newUser" >Update</button>
+        <button type="submit" class="btn btn-default" [disabled]="userDetials.form.invalid" (click)="addData()" *ngIf="newUser" >Add</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal !-->
+  
+</div>
